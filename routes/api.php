@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Route;
 
 
 
-Route::namespace('V1')->prefix('v1')->group(function () {
+Route::middleware('throttle:240,1')->namespace('V1')->prefix('v1')->group(function () {
     // authentication
     Route::prefix('auth')->namespace('Authentication')->controller('AuthenticationController')->group(function () {
         Route::post('send_code', 'send_code');
