@@ -3,6 +3,7 @@
 namespace App\Http\Resources\V1\Message;
 
 use App\Http\Resources\V1\User\UserInfo;
+use App\Http\Resources\V1\User\UserInfoForMessage;
 use App\Models\Message;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
@@ -26,7 +27,7 @@ class MessagesGetCollection extends ResourceCollection
         return $this->collection->map(function(Message $message){
             return [
                 'message' => (new MessageResource($message)),
-                'user' => new UserInfo($message->user)
+                'user' => new UserInfoForMessage($message->user)
             ];
         })->toArray();
     }

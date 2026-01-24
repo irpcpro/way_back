@@ -1,0 +1,267 @@
+# WAY
+
+###
+# group: Auth
+# @name send code
+POST {{base_url}}/api/v1/auth/send_code
+Accept: application/json
+Content-Type: application/json
+
+{
+    "mobile": "09365371300"
+}
+
+###
+# group: Auth
+# @name confirmation code
+POST {{base_url}}/api/v1/auth/confirmation_code
+Accept: application/json
+Content-Type: application/json
+
+{
+    "mobile": "09365371300",
+    "code": "11111"
+}
+
+> {%
+    // TODO: migrate to HTTP Client Response handler API
+    // var jsonData = JSON.parse(responseBody);
+
+    // pm.environment.set("token", jsonData.data.token);
+%}
+
+###
+# group: Websocket
+# @name auth new messages
+POST {{base_url}}/api/v1/websocket/auth-new-messages
+Authorization: Bearer {{token}}
+Accept: application/json
+Content-Type: application/json
+
+{
+    "socket_id": "699803710.4845780",
+    "channel_names": [
+        "private-new_messages.id_message_hook.20",
+        "private-new_messages.id_message_hook.21",
+        "private-new_messages.id_message_hook.22"
+    ]
+}
+
+###
+# group: Websocket
+# @name auth for all websockets
+POST {{base_url}}/api/broadcasting/auth
+Authorization: Bearer {{token}}
+Accept: application/json
+Content-Type: application/json
+#x-app-id: {{app_id}}
+
+{
+    "socket_id": "267499057.882048137",
+    "channel_name": "private-user.1"
+}
+
+###
+# group: User / Info
+# @name user info
+# gender : [
+#     man = 1,
+#     woman = 0
+# ]
+PUT {{base_url}}/api/v1/user/info/update
+Authorization: Bearer {{token}}
+Accept: application/json
+Content-Type: application/json
+
+{
+    "name": "aleex 30",
+    "gender": 0,
+    "username": "alitna30"
+}
+
+
+###
+# group: User / Info
+# @name get info
+# gender : [
+#     man = 1,
+#     woman = 0
+# ]
+GET {{base_url}}/api/v1/user/info
+Authorization: Bearer {{token}}
+Accept: application/json
+Content-Type: application/json
+
+###
+# group: User / Avatars
+# @name set avatar
+POST {{base_url}}/api/v1/avatar/set_avatar
+Authorization: Bearer {{token}}
+Accept: application/json
+Content-Type: application/json
+
+--WebAppBoundary
+Content-Disposition: form-data; name="avatar"; filename="/C:/Users/IRPCPRO/Pictures/Video Projects/1678301351p47014.jpg"
+
+< /C:/Users/IRPCPRO/Pictures/Video Projects/1678301351p47014.jpg
+--WebAppBoundary
+
+###
+# group: User / Avatars
+# @name get last avatar
+GET {{base_url}}/api/v1/avatar/get_last_avatar
+Authorization: Bearer {{token}}
+Accept: application/json
+Content-Type: application/json
+
+###
+# group: User / Avatars
+# @name get avatars
+GET {{base_url}}/api/v1/avatar/get_avatars
+Authorization: Bearer {{token}}
+Accept: application/json
+Content-Type: application/json
+
+###
+# group: User / Avatars
+# @name delete avatar
+DELETE {{base_url}}/api/v1/avatar/delete_avatar/4
+Authorization: Bearer {{token}}
+Accept: application/json
+Content-Type: application/json
+
+###
+# group: User / Contacts
+# @name get contacts list
+GET {{base_url}}/api/v1/contacts/list
+Authorization: Bearer {{token}}
+Accept: application/json
+Content-Type: application/json
+
+###
+# group: User / Contacts
+# @name add contact
+POST {{base_url}}/api/v1/contacts/add
+Authorization: Bearer {{token}}
+Accept: application/json
+Content-Type: application/json
+
+{
+    "id_user": "2",
+    "mobile": "09365371302",
+    "name": "my best firends"
+}
+
+###
+# group: User / Contacts
+# @name update contact
+PUT {{base_url}}/api/v1/contacts/update/2
+Authorization: Bearer {{token}}
+Accept: application/json
+Content-Type: application/json
+
+{
+    "name": "my firend",
+    "mobile": "09365371302"
+}
+
+###
+# group: User / Contacts
+# @name delete contact
+DELETE {{base_url}}/api/v1/contacts/delete/2
+Authorization: Bearer {{token}}
+Accept: application/json
+Content-Type: application/json
+
+###
+# group: Search User
+# @name Search
+# this request should just send "username" or "mobile".
+# if both entered, mobile is more priority.
+GET {{base_url}}/api/v1/search-user/search
+Authorization: Bearer {{token}}
+Accept: application/json
+Content-Type: application/json
+
+{
+    "username": "",
+    "mobile": "09365371302"
+}
+
+###
+# group: Message
+# @name send
+# if id_message_hook is entered, it will be validated \[true or false\].
+# id_message_hook be null, id_user will validated.
+# context limit character: 500
+# if message type is attachment \[2\] id_attachment is required and context could be null.
+POST {{base_url}}/api/v1/message/send
+Authorization: Bearer {{token}}
+Accept: application/json
+Content-Type: application/json
+
+{
+    "id_message_hook": 20,
+    "id_user": 2,
+    "context": "this caption",
+    "type": 1
+}
+
+###
+# group: Message
+# @name get
+# StartFragment
+# api/v1/chat/get-messages/20/56
+# 20 = id_message_hook \[required\]
+# 56 = offset to get messages before this id_message \[optional\]
+# EndFragment
+GET {{base_url}}/api/v1/message/get/20/56
+Authorization: Bearer {{token}}
+Accept: application/json
+Content-Type: application/json
+
+###
+# group: Message
+# @name list
+GET {{base_url}}/api/v1/message/list
+Authorization: Bearer {{token}}
+Accept: application/json
+Content-Type: application/json
+
+###
+# group: Message
+# @name seen
+POST {{base_url}}/api/v1/message/seen
+Authorization: Bearer {{token}}
+Accept: application/json
+Content-Type: application/json
+
+{
+    "id_messages": [
+        81,
+        39,
+        40
+    ]
+}
+
+
+###
+# group: Attachment
+# @name upload
+# type = \[
+# image = 1,
+# \]
+POST {{base_url}}/api/v1/attachment/upload
+Authorization: Bearer {{token}}
+Accept: application/json
+Content-Type: application/json
+
+--WebAppBoundary
+Content-Disposition: form-data; name="attachment"; filename="/C:/Users/IRPCPRO/Pictures/p.jpg"
+
+< /C:/Users/IRPCPRO/Pictures/p.jpg
+--WebAppBoundary
+Content-Disposition: form-data; name="type"
+
+1
+--WebAppBoundary

@@ -11,9 +11,12 @@ use Illuminate\Http\Resources\Json\JsonResource;
 class MessageResource extends JsonResource
 {
 
+    private int|null $currentUserID = null;
+
     public function __construct(Message $resource)
     {
         parent::__construct($resource);
+        $this->currentUserID = auth()->user()->id_user?? 0;
     }
 
     /**
@@ -35,11 +38,17 @@ class MessageResource extends JsonResource
             'updated_at' => $this->updated_at,
             'type' => $this->type,
             'seen' => $seen,
+            'is_current_user' => $this->currentUserID == $this->id_user
         ];
 
         // if type is attachment, add attachment details to message
-        if($this->type == MessageTypeEnum::ATTACHMENT->value)
-            $data['attachment'] = (new AttachmentResource($this->attachments()->first()))->toArray($request);
+        if($this->type == MessageTypeEnum::ATTACHMENT->value){
+            $attachment = $this->attachments();
+            if($attachment->exists() != null)
+                $data['attachment'] = (new AttachmentResource($attachment->first()))->toArray($request);
+            else
+                $data['attachment'] = 'null';
+        }
 
         return $data;
     }

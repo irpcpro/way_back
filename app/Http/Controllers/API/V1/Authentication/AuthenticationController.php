@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API\V1\Authentication;
 
+use App\Enums\GenderEnum;
 use App\Events\AuthenticationCodeEvent;
 use App\Http\Requests\Authentication\ConfirmationCodeRequest;
 use App\Http\Requests\Authentication\SendCodeRequest;
@@ -99,7 +100,12 @@ class AuthenticationController
 
         // generate token and sent
         $data = [
-            'token' => auth('api')->login($user) ?? null
+            'token' => auth('api')->login($user) ?? null,
+            'user' => [
+                'name' => $user->name,
+                'username' => $user->username,
+                'gender' => $user->gender == GenderEnum::MAN ? 'man' : 'woman',
+            ],
         ];
 
         $response = APIResponse('you are logged in.', 200, true);

@@ -2,6 +2,7 @@
 
 namespace App\Events;
 
+use App\Models\AuthenticationCode;
 use App\Models\User;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
@@ -22,7 +23,12 @@ class AuthenticationCodeEvent
         public User $user
     )
     {
-        //
+        AuthenticationCode::create([
+            'id_user' => $user->id_user,
+//            'code' => rand(0,9) . rand(0,9) . rand(0,9) . rand(0,9),
+            'code' => '1111',
+            'expired' => false,
+        ]);
     }
 
     /**

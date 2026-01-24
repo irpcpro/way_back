@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-
+echo ':)';
 //    event(new UserNewConversationsEvents(\App\Models\User::where('id_user', 1)->first()));
 //    \App\Models\MessageSeen::create([
 //        'id_message' => 40,

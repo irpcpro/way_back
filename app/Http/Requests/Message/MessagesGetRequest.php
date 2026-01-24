@@ -15,7 +15,7 @@ class MessagesGetRequest extends AppRequest
     {
         // get variables
         $current_user = auth()->user();
-        $offset = $this->offset;
+//        $offset = $this->offset;
         $id_message_hook = $this->route('message_hook')->id_message_hook;
 
         // check id_message_hook is for current_user
@@ -27,17 +27,17 @@ class MessagesGetRequest extends AppRequest
             return false;
         }
 
-        // check for offset is related to message_hook
-        if(isset($offset) && $offset !== null){
-            $offset_exists_in_msg_hook = Message::query()->where([
-                ['id_message', '=', $offset],
-                ['id_message_hook', '=', $id_message_hook]
-            ]);
-            if($offset_exists_in_msg_hook->exists() === false){
-                $this->error_message_authorization = 'this offset is not for this message_hook.';
-                return false;
-            }
-        }
+//        // check for offset is related to message_hook
+//        if(isset($offset) && $offset !== null){
+//            $offset_exists_in_msg_hook = Message::query()->where([
+//                ['id_message', '=', $offset],
+//                ['id_message_hook', '=', $id_message_hook]
+//            ]);
+//            if($offset_exists_in_msg_hook->exists() === false){
+//                $this->error_message_authorization = 'this offset is not for this message_hook.';
+//                return false;
+//            }
+//        }
 
         return true;
     }
@@ -46,7 +46,7 @@ class MessagesGetRequest extends AppRequest
     {
         $this->merge([
             'id_message_hook' => $this->route('message_hook')->id_message_hook,
-            'offset' => $this->route('offset')
+//            'offset' => $this->route('offset')
         ]);
     }
 
@@ -54,7 +54,7 @@ class MessagesGetRequest extends AppRequest
     {
         return [
             'id_message_hook' => ['required', 'exists:message_hooks,id_message_hook', 'bail'],
-            'offset' => ['nullable', 'exists:messages,id_message'],
+//            'offset' => ['nullable', 'exists:messages,id_message'],
         ];
     }
 
@@ -63,7 +63,7 @@ class MessagesGetRequest extends AppRequest
         return [
             'id_message_hook.required' => 'id_message_hook is required.',
             'id_message_hook.exists' => 'id_message_hook not exists.',
-            'offset.exists' => 'offset not exists.',
+//            'offset.exists' => 'offset not exists.',
         ];
     }
 

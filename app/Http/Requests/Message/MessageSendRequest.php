@@ -88,18 +88,18 @@ class MessageSendRequest extends AppRequest
                 'string',
                 'max:' . CHAT_MESSAGE_CHARACTER_LIMIT
             ],
-            'id_attachment' => [
-                'bail',
-                'required_if:type,' . MessageTypeEnum::ATTACHMENT->value,
-                'exists:attachments,id_attachment',
-                Rule::exists('attachments')->where(function($query){
-                    return $query->where('id_user', $this->current_user->id_user);
-                }),
-            ],
             'type' => [
                 'required',
                 Rule::enum(MessageTypeEnum::class)
-            ]
+            ],
+//            'id_attachment' => [
+//                'bail',
+//                'required_if:type,' . MessageTypeEnum::ATTACHMENT->value,
+//                'exists:attachments,id_attachment',
+//                Rule::exists('attachments')->where(function($query){
+//                    return $query->where('id_user', $this->current_user->id_user);
+//                }),
+//            ]
         ];
     }
 

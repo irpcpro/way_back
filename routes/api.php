@@ -62,10 +62,11 @@ Route::namespace('V1')->prefix('v1')->group(function () {
             // message
             Route::controller('MessageController')->group(function(){
                 Route::post('send', 'send');
-                Route::get('get/{message_hook}/{offset?}', 'get')->where([
-                    'message_hook' => '[0-9]+',
-                    'offset' => '[0-9]+'
-                ]);
+//                Route::get('get/{message_hook}/{offset?}', 'get')->where([
+//                    'message_hook' => '[0-9]+',
+//                    'offset' => '[0-9]+'
+//                ]);
+                Route::get('get/{message_hook}', 'get')->where(['message_hook' => '[0-9]+']);
                 Route::get('list', 'list');
             });
 

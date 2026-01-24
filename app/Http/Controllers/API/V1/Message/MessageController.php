@@ -13,6 +13,8 @@ use App\Http\Requests\Message\MessageSeenRequest;
 use App\Http\Resources\V1\Message\MessageResource;
 use App\Http\Resources\V1\Message\MessagesGetCollection;
 use App\Http\Resources\V1\Message\MessagesListResource;
+use App\Http\Resources\V1\User\UserInfo;
+use App\Http\Resources\V1\User\UserInfoForMessage;
 use App\Models\Message;
 use App\Models\MessageHook;
 use App\Models\MessageHookMembers;
@@ -96,8 +98,10 @@ class MessageController extends Controller
             }
 
             // set data to response
-            $data = new MessageResource($message);
-            $data = $data->toArray($request);
+            $data = [
+                'message' => new MessageResource($message),
+                'user' => new UserInfoForMessage($message->user)
+            ];
             $response = APIResponse('message sent.', 200, true)->setData($data)->get();
             DB::commit();
         } catch (\Exception $exception){
@@ -112,23 +116,61 @@ class MessageController extends Controller
         );
     }
 
-    public function get(MessagesGetRequest $request, MessageHook $message_hook, $offset = null)
-    {
-        // get messages
-        $messages = Message::query();
-        // if there was an offset, get messages before (oldest) offset
-        if(isset($offset) && $offset !== null)
-            $messages = $messages->where('id_message', '<', $offset);
-        $messages = $messages->where('id_message_hook', $message_hook->id_message_hook);
-        $messages = $messages->latest();
-        $messages = $messages->take(PAGINATE_MESSAGE_LOAD);
-        $messages = $messages->get();
-        $messages = new MessagesGetCollection($messages);
-        $messages = $messages->toArray($request);
+//    public function get(MessagesGetRequest $request, MessageHook $message_hook, $offset = null)
+//    {
+//        // get messages
+//        $messages = Message::query();
+//        // if there was an offset, get messages before (oldest) offset
+//        if(isset($offset) && $offset !== null)
+//            $messages = $messages->where('id_message', '<', $offset);
+//        $messages = $messages->where('id_message_hook', $message_hook->id_message_hook);
+//        $messages = $messages->latest();
+//        $messages = $messages->take(PAGINATE_MESSAGE_LOAD);
+//        $messages = $messages->get();
+//        $messages = new MessagesGetCollection($messages);
+//        $messages = $messages->toArray($request);
+//
+//        // return response
+//        APIResponse('messages received.', 200, true)->setData($messages)->send();
+//    }
 
-        // return response
-        APIResponse('messages received.', 200, true)->setData($messages)->send();
+    public function get(MessagesGetRequest $request, MessageHook $message_hook)
+    {
+        // get messages (DESC from DB)
+        $messages = Message::query()
+            ->where('id_message_hook', $message_hook->id_message_hook)
+            ->latest()
+            ->simplePaginate(PAGINATE_MESSAGE_LOAD);
+
+        // reverse for chat UI (ASC)
+        $messages->setCollection(
+            $messages->getCollection()->reverse()->values()
+        );
+
+        // resource (بدون تبدیل به آرایه)
+        $messages = new MessagesGetCollection($messages->getCollection());
+
+        // get members
+        $members = MessageHook::query()
+            ->where('id_message_hook', $message_hook->id_message_hook)
+            ->with('message_hook_members.user')
+            ->with('message_hook_members', function ($query) {
+                $query->where('id_user', '!=', auth()->id());
+            })
+            ->first()
+            ->message_hook_members
+            ->pluck('user');
+
+        $members = UserInfo::collection($members);
+
+        // response
+        APIResponse('messages received.', 200, true)->setData([
+            'chats' => $messages,
+            'members' => $members,
+            'has_more' => $messages->count() === PAGINATE_MESSAGE_LOAD
+        ])->send();
     }
+
 
     public function list(Request $request)
     {
