@@ -83,6 +83,7 @@ class MessageSendRequest extends AppRequest
         return [
             'id_user' => ['nullable', 'required_without:id_message_hook', 'exists:users,id_user', 'bail'],
             'id_message_hook' => ['nullable', 'required_without:id_user', 'exists:message_hooks,id_message_hook'],
+            'uuid' => ['string'],
             'context' => [
                 'required_if:type,' . MessageTypeEnum::TEXT->value,
                 'string',

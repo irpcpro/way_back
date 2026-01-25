@@ -12,11 +12,14 @@ class MessageResource extends JsonResource
 {
 
     private int|null $currentUserID = null;
+    private bool $isBroadcast;
 
-    public function __construct(Message $resource)
+    public function __construct(Message $resource, $isBroadcast = false)
     {
         parent::__construct($resource);
         $this->currentUserID = auth()->user()->id_user?? 0;
+
+        $this->isBroadcast = $isBroadcast;
     }
 
     /**
@@ -38,7 +41,7 @@ class MessageResource extends JsonResource
             'updated_at' => $this->updated_at,
             'type' => $this->type,
             'seen' => $seen,
-            'is_current_user' => $this->currentUserID == $this->id_user
+            'is_current_user' => $this->isBroadcast ? false : $this->currentUserID == $this->id_user
         ];
 
         // if type is attachment, add attachment details to message

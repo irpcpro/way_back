@@ -17,7 +17,8 @@ class SendToMembersMessageHookEvent implements ShouldBroadcast
     public $channelName;
 
     public function __construct(
-        public Message $message
+        public Message $message,
+        public string $uuid
     )
     {
         $this->channelName = SEND_TO_MEMBERS_MESSAGE_HOOK_CHANNEL_NAME;
@@ -32,7 +33,10 @@ class SendToMembersMessageHookEvent implements ShouldBroadcast
 
     public function broadcastWith()
     {
-        return (new MessageNewResource($this->message))->toArray(request());
+        return array_merge(
+            (new MessageNewResource($this->message))->toArray(request()),
+            ['uuid' => $this->uuid ?? null]
+        );
     }
 
     public function broadcastAs(): string

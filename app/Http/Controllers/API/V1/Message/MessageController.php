@@ -58,6 +58,7 @@ class MessageController extends Controller
         $current_user = auth()->user();
         $type = $request->validated('type');
         $id_attachment = $request->validated('id_attachment');
+        $uuid = $request->validated('uuid');
 
         DB::beginTransaction();
         try {
@@ -87,13 +88,13 @@ class MessageController extends Controller
             // broadcast message to Users or Members_message_hook
             if(empty($id_users)){
                 // TODO - add event for send PushNotification
-                event(new SendToMembersMessageHookEvent($message));
+                event(new SendToMembersMessageHookEvent($message, $uuid));
             }else{
                 // TODO - add event for send PushNotification
                 $getUsers = User::whereIn('id_user', $id_users)->get();
                 if($getUsers->count()){
                     foreach ($getUsers as $user)
-                        event(new UserNewConversationsEvents($user, $message));
+                        event(new UserNewConversationsEvents($user, $message, $uuid));
                 }
             }
 

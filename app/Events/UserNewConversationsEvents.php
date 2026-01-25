@@ -19,7 +19,8 @@ class UserNewConversationsEvents implements ShouldBroadcast
 
     public function __construct(
         public User $user,
-        public Message $message
+        public Message $message,
+        public string $uuid
     )
     {
         $this->channelName = USER_CHANNEL_NAME;
@@ -32,7 +33,10 @@ class UserNewConversationsEvents implements ShouldBroadcast
 
     public function broadcastWith()
     {
-        return (new MessageNewResource($this->message))->toArray(request());
+        return array_merge(
+            (new MessageNewResource($this->message))->toArray(request()),
+            ['uuid' => $this->uuid ?? null]
+        );
     }
 
     public function broadcastAs(): string

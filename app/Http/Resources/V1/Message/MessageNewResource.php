@@ -9,7 +9,6 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class MessageNewResource extends JsonResource
 {
-
     public function __construct(Message $resource)
     {
         parent::__construct($resource);
@@ -18,7 +17,7 @@ class MessageNewResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'message' => (new MessageResource($this->resource)),
+            'message' => (new MessageResource($this->resource, true)),
             'user' => new UserInfo($this->resource->user)
         ];
     }
