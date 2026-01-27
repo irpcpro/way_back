@@ -2,7 +2,9 @@
 
 use App\Events\SendToMembersMessageHookEvent;
 use App\Events\UserNewConversationsEvents;
+
 use Illuminate\Support\Facades\Route;
+use Ramsey\Uuid\Uuid;
 
 /*
 |--------------------------------------------------------------------------

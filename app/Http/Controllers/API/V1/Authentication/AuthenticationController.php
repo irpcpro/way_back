@@ -105,6 +105,7 @@ class AuthenticationController
                 'name' => $user->name,
                 'username' => $user->username,
                 'gender' => $user->gender == GenderEnum::MAN ? 'man' : 'woman',
+                'uuid' => $user->uuid,
             ],
         ];
 

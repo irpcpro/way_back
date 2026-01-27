@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Ramsey\Uuid\Uuid;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
 class User extends Authenticatable implements JWTSubject
@@ -71,6 +72,15 @@ class User extends Authenticatable implements JWTSubject
         'created_at' => 'datetime',
         'updated_at' => 'datetime'
     ];
+
+    protected $appends = [
+        'uuid'
+    ];
+
+    public function getUuidAttribute()
+    {
+        return Uuid::uuid5(Uuid::NAMESPACE_DNS, $this->id_user)->toString();
+    }
 
     public function getCreatedAtAttribute($date)
     {
