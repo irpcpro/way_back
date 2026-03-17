@@ -1,0 +1,2 @@
+insert into way.attachments (id_attachment, id_user, type, name, extension, path, size_b, created_at, updated_at)
+values  (1, 1, 1, '1679902971r97203', 'jpg', '/uploads/attachment/images/', '100224', '2023-03-27 11:12:52', '2023-03-27 11:12:52');

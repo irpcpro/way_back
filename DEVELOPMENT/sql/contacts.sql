@@ -1,0 +1,2 @@
+insert into way.contacts (id_contact, id_user, contact_user_id, contact_user_mobile, contact_user_name, created_at, updated_at)
+values  (3, 2, 1, 0, 'sssss', '2023-03-10 16:10:11', '2023-03-10 16:19:20');
