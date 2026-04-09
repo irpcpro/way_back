@@ -17,16 +17,19 @@ class SearchUserRequest extends AppRequest
     public function rules(): array
     {
         return [
-            'username' => ['nullable', 'required_without:mobile', new UsernameRule],
-            'mobile' => ['nullable', 'required_without:username', new MobileRule],
+//            'username' => ['nullable', 'required_without:mobile', new UsernameRule],
+//            'mobile' => ['nullable', 'required_without:username', new MobileRule],
+            'query' => ['required', 'string'],
         ];
     }
 
     public function messages()
     {
         return [
-            'username.required_without' => "username or mobile shouldn't be empty.",
-            'mobile.required_without' => "username or mobile shouldn't be empty",
+//            'username.required_without' => "username or mobile shouldn't be empty.",
+//            'mobile.required_without' => "username or mobile shouldn't be empty",
+            'query.required' => 'The query field is required.',
+            'query.string' => 'The query field must be a string.',
         ];
     }
 

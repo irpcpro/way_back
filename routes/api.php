@@ -47,6 +47,7 @@ Route::middleware('throttle:550,1')->namespace('V1')->prefix('v1')->group(functi
         // search
         Route::prefix('search-user')->namespace('SearchUser')->controller('SearchUserController')->group(function(){
             Route::get('search', 'search');
+            Route::get('id', 'searchID');
         });
 
         // contacts
@@ -66,6 +67,7 @@ Route::middleware('throttle:550,1')->namespace('V1')->prefix('v1')->group(functi
 //                    'message_hook' => '[0-9]+',
 //                    'offset' => '[0-9]+'
 //                ]);
+                Route::post('make_conversation/{user}', 'makeConversation');
                 Route::get('get/{message_hook}', 'get')->where(['message_hook' => '[0-9]+']);
                 Route::get('list', 'list');
             });

@@ -117,6 +117,31 @@ class MessageController extends Controller
         );
     }
 
+    public function makeConversation(User $user){
+        $current_user = auth()->user();
+
+        $getHooks = $current_user->message_hook_member()->whereHas('message_hook', function ($query) use ($user) {
+            $query->whereHas('message_hook_members', function ($query) use ($user) {
+                $query->where('id_user', $user->id_user);
+            });
+        });
+        if($getHooks->exists())
+            APIResponse('you have already conversation with this user', 500)->send();
+
+        // make hooks
+        $id_users = [
+            $current_user->id_user,
+            $user->id_user
+        ];
+        $id_message_hook = $this->createHooksAndMembers(MessageHookTypeEnum::PRIVATE, $id_users);
+
+        $response = APIResponse('conversation was made successfully', 200, true);
+        $response = $response->setData([
+            'id_message_hook' => $id_message_hook,
+        ]);
+        $response->send();
+    }
+
 //    public function get(MessagesGetRequest $request, MessageHook $message_hook, $offset = null)
 //    {
 //        // get messages

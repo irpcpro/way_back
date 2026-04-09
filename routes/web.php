@@ -3,6 +3,7 @@
 use App\Events\SendToMembersMessageHookEvent;
 use App\Events\UserNewConversationsEvents;
 
+use App\Models\User;
 use Illuminate\Support\Facades\Route;
 use Ramsey\Uuid\Uuid;
 
