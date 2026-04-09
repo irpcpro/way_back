@@ -6,6 +6,7 @@ use App\Enums\GenderEnum;
 use App\Events\AuthenticationCodeEvent;
 use App\Http\Requests\Authentication\ConfirmationCodeRequest;
 use App\Http\Requests\Authentication\SendCodeRequest;
+use App\Http\Resources\V1\Avatar\AvatarResource;
 use App\Models\User;
 use Carbon\Carbon;
 
@@ -106,6 +107,7 @@ class AuthenticationController
                 'username' => $user->username,
                 'gender' => $user->gender == GenderEnum::MAN ? 'man' : 'woman',
                 'uuid' => $user->uuid,
+                'avatar' => new AvatarResource($user->avatar)
             ],
         ];
 
