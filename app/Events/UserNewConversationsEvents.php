@@ -20,7 +20,7 @@ class UserNewConversationsEvents implements ShouldBroadcast
     public function __construct(
         public User $user,
         public Message $message,
-        public string $uuid
+        public string|null $uuid
     )
     {
         $this->channelName = USER_CHANNEL_NAME;
@@ -28,7 +28,7 @@ class UserNewConversationsEvents implements ShouldBroadcast
 
     public function broadcastOn(): PrivateChannel
     {
-        return new PrivateChannel($this->channelName . $this->user->id_user);
+        return new PrivateChannel($this->channelName . $this->user->uuid);
     }
 
     public function broadcastWith()

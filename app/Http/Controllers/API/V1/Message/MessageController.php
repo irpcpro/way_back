@@ -143,7 +143,7 @@ class MessageController extends Controller
                 'type' => MessageTypeEnum::TEXT->value,
                 'context' => "$myName, Started conversation.",
             ]);
-            event(new SendToMembersMessageHookEvent($message, null));
+            event(new UserNewConversationsEvents($user, $message, null));
 
             DB::commit();
 
@@ -162,24 +162,6 @@ class MessageController extends Controller
             $response
         );
     }
-
-//    public function get(MessagesGetRequest $request, MessageHook $message_hook, $offset = null)
-//    {
-//        // get messages
-//        $messages = Message::query();
-//        // if there was an offset, get messages before (oldest) offset
-//        if(isset($offset) && $offset !== null)
-//            $messages = $messages->where('id_message', '<', $offset);
-//        $messages = $messages->where('id_message_hook', $message_hook->id_message_hook);
-//        $messages = $messages->latest();
-//        $messages = $messages->take(PAGINATE_MESSAGE_LOAD);
-//        $messages = $messages->get();
-//        $messages = new MessagesGetCollection($messages);
-//        $messages = $messages->toArray($request);
-//
-//        // return response
-//        APIResponse('messages received.', 200, true)->setData($messages)->send();
-//    }
 
     public function get(MessagesGetRequest $request, MessageHook $message_hook)
     {
@@ -233,7 +215,7 @@ class MessageController extends Controller
         $data = $messages->map(function($item) use ($request){
             return (new MessagesListResource($item->message_hook))->toArray($request);
         });
-        $data = $data->sortByDesc('created_at');
+        $data = $data->sortByDesc('message.created_at');
         $data = $data->toArray();
         $data = array_values($data);
 

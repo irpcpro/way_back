@@ -31,4 +31,9 @@ echo ':)';
 //        'id_user' => 1
 //    ]);
 
+
+    $user = User::where('id_user', 1)->first();
+    $message = \App\Models\Message::where('id_message', 17)->first();
+    event(new UserNewConversationsEvents($user, $message, null));
+
 });

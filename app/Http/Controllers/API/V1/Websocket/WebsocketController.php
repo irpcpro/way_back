@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API\V1\Websocket;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Websocket\AuthNewMessagesRequest;
+use App\Http\Requests\Websocket\AuthUserChannelRequest;
 use App\Models\MessageHookMembers;
 use Illuminate\Broadcasting\Broadcasters\PusherBroadcaster;
 use BeyondCode\LaravelWebSockets\Apps\App;
@@ -77,6 +78,33 @@ class WebsocketController extends Controller
                 $PusherBroadcaster->validAuthenticationResponse($request, [])
             );
         }
+
+        APIResponse('data received.', 200, true)->setData($collect_auth)->send();
+    }
+
+    public function authUserChannel(AuthUserChannelRequest $request){
+        // get pusher app setting
+        $app = App::findById($this->app_id);
+        $channel_name = $request->validated('channel_name');
+        $user = auth()->user();
+        $user_uuid = $user->uuid;
+        $create_channel_name = SEND_TO_MEMBERS_MESSAGE_HOOK_PREFIX_CHANNEL_NAME . USER_CHANNEL_NAME . $user_uuid;
+
+        if($create_channel_name !== $channel_name)
+            throw new AccessDeniedHttpException;
+
+        $PusherBroadcaster = new PusherBroadcaster(new Pusher(
+            $app->key,
+            $app->secret,
+            $app->id,
+            []
+        ));
+        $collect_auth = array_merge(
+            [
+                'channel_name' => $channel_name
+            ],
+            $PusherBroadcaster->validAuthenticationResponse($request, [])
+        );
 
         APIResponse('data received.', 200, true)->setData($collect_auth)->send();
     }

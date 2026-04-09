@@ -72,7 +72,7 @@ class MessageSendRequest extends AppRequest
     protected function prepareForValidation()
     {
         $this->merge([
-            'context' => htmlspecialchars($this->context),
+            'context' => trim($this->context),
             'type' => (int) htmlspecialchars($this->type),
             'id_attachment' => (int) htmlspecialchars($this->id_attachment)
         ]);

@@ -26,9 +26,13 @@ class SearchUserController extends Controller
                 ->orWhere('username', 'like', "%$mobile%")
                 ->orWhere('name', 'like', "%$mobile%");
         });
-        $find_user = $find_user->with('message_hook_member.message_hook.message_hook_members', function($query) use ($current_user){
-            $query->where('id_user', $current_user->id_user);
-        });
+        $find_user = $find_user->with([
+            'message_hook_member' => function ($query) use ($current_user) {
+                $query->whereHas('message_hook.message_hook_members', function ($q) use ($current_user) {
+                    $q->where('id_user', $current_user->id_user);
+                });
+            }
+        ]);
         $find_user = $find_user->whereNot('id_user',$current_user->id_user);
         // if nothing found
         if(!$find_user->exists())

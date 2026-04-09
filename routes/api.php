@@ -18,7 +18,7 @@ Route::middleware('throttle:550,1')->namespace('V1')->prefix('v1')->group(functi
         Route::prefix('websocket')->namespace('Websocket')->controller('WebsocketController')->group(function(){
             // authorization
             Route::post('auth-new-messages', 'authNewMessages');
-
+            Route::post('auth-user-channel', 'authUserChannel');
         });
 
         // user

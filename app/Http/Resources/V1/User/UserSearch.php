@@ -31,6 +31,7 @@ class UserSearch extends JsonResource {
     public function toArray(Request $request): array
     {
         $gender = $this->gender?->name;
+
         $data = [
             'id_user' => $this->id_user,
             'name' => $this->name,
@@ -38,7 +39,9 @@ class UserSearch extends JsonResource {
             'gender' => $this->gender?->value,
             'gender_name' => $gender ? strtolower($gender) : null,
             'avatar' => new AvatarResource($this->avatar),
-            'id_message_hook' => $this->message_hook_member->first()->id_message_hook ?? null,
+            'id_message_hook' => $this->message_hook_member->isNotEmpty()
+                ? $this->message_hook_member->first()->id_message_hook
+                : null,
         ];
 
         // if user is current_user, show name and mobile
