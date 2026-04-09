@@ -27,7 +27,7 @@ class MessagesListResource extends JsonResource
         // get user member except current user
         $user_member = $this->message_hook_members->first();
         return [
-            'message' => (new MessageResource($message)),
+            'message' => $message? (new MessageResource($message)) : null,
             'user' => new UserInfo($user_member->user)
         ];
     }

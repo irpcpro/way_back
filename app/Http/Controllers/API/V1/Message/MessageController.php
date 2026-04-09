@@ -87,10 +87,8 @@ class MessageController extends Controller
 
             // broadcast message to Users or Members_message_hook
             if(empty($id_users)){
-                // TODO - add event for send PushNotification
                 event(new SendToMembersMessageHookEvent($message, $uuid));
             }else{
-                // TODO - add event for send PushNotification
                 $getUsers = User::whereIn('id_user', $id_users)->get();
                 if($getUsers->count()){
                     foreach ($getUsers as $user)
@@ -120,26 +118,49 @@ class MessageController extends Controller
     public function makeConversation(User $user){
         $current_user = auth()->user();
 
-        $getHooks = $current_user->message_hook_member()->whereHas('message_hook', function ($query) use ($user) {
-            $query->whereHas('message_hook_members', function ($query) use ($user) {
-                $query->where('id_user', $user->id_user);
+        DB::beginTransaction();
+        try {
+            $getHooks = $current_user->message_hook_member()->whereHas('message_hook', function ($query) use ($user) {
+                $query->whereHas('message_hook_members', function ($query) use ($user) {
+                    $query->where('id_user', $user->id_user);
+                });
             });
-        });
-        if($getHooks->exists())
-            APIResponse('you have already conversation with this user', 500)->send();
+            if($getHooks->exists())
+                APIResponse('you have already conversation with this user', 500)->send();
 
-        // make hooks
-        $id_users = [
-            $current_user->id_user,
-            $user->id_user
-        ];
-        $id_message_hook = $this->createHooksAndMembers(MessageHookTypeEnum::PRIVATE, $id_users);
+            // make hooks
+            $id_users = [
+                $current_user->id_user,
+                $user->id_user
+            ];
+            $id_message_hook = $this->createHooksAndMembers(MessageHookTypeEnum::PRIVATE, $id_users);
 
-        $response = APIResponse('conversation was made successfully', 200, true);
-        $response = $response->setData([
-            'id_message_hook' => $id_message_hook,
-        ]);
-        $response->send();
+            // save message
+            $myName = $current_user->name != null? $current_user->name : $current_user->username;
+            $message = Message::create([
+                'id_user' => $current_user->id_user,
+                'id_message_hook' => $id_message_hook,
+                'type' => MessageTypeEnum::TEXT->value,
+                'context' => "$myName, Started conversation.",
+            ]);
+            event(new SendToMembersMessageHookEvent($message, null));
+
+            DB::commit();
+
+            $response = APIResponse('conversation was made successfully', 200, true);
+            $response = $response->setData([
+                'id_message_hook' => $id_message_hook,
+            ])->get();
+        } catch (\Exception $exception){
+            DB::rollBack();
+            Log::error('something went wrong in ' . __METHOD__, [$exception]);
+            $response = APIResponse('something went wrong..', 500)->get();
+        }
+
+        // return response
+        throw new HttpResponseException(
+            $response
+        );
     }
 
 //    public function get(MessagesGetRequest $request, MessageHook $message_hook, $offset = null)

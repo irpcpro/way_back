@@ -18,7 +18,7 @@ class SendToMembersMessageHookEvent implements ShouldBroadcast
 
     public function __construct(
         public Message $message,
-        public string $uuid
+        public string|null $uuid
     )
     {
         $this->channelName = SEND_TO_MEMBERS_MESSAGE_HOOK_CHANNEL_NAME;
