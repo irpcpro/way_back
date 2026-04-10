@@ -32,6 +32,7 @@ Route::middleware('throttle:550,1')->namespace('V1')->prefix('v1')->group(functi
             Route::prefix('info')->controller('UserInfoController')->group(function(){
                 Route::get('/', 'get');
                 Route::put('update', 'update');
+                Route::post('check-username', 'checkUsername');
             });
 
         });
