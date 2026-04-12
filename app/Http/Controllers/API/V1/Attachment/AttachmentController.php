@@ -71,7 +71,7 @@ class AttachmentController extends Controller
             'type' => AttachmentTypeEnum::IMAGE->value,
             'name' => $attachment_name,
             'extension' => $final_extension,
-            'path' => $attachment_final_type_path,
+            'path' => $final_upload_path,
             'size_b' => File::size($final_upload_path),
             'id_message_hook' => $id_message_hook,
         ]);

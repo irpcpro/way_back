@@ -21,7 +21,8 @@ class AttachmentResource extends JsonResource
 
         return [
             'id_attachment' => $this->id_attachment,
-            'url' => $this->url,
+//            'url' => $this->url,
+            'url' => route('attachment.view', ['id' => $this->id_attachment]),
             'name' => $this->name,
             'type' => $this->type,
             'extension' => $this->extension,
