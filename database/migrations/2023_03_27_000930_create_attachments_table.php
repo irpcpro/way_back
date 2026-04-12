@@ -20,6 +20,8 @@ return new class extends Migration
             $table->string('extension');
             $table->string('path');
             $table->string('size_b');
+            $table->unsignedBigInteger('id_message_hook');
+
             $table->timestamps();
         });
     }

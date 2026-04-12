@@ -29,7 +29,7 @@ const AVATAR_MIMES = [
     'jpg',
     'png'
 ];
-const ATTACHMENT_SIZE = 2 * 1024; // MB
+const ATTACHMENT_SIZE = 80 * 1024; // MB
 const ATTACHMENT_MIMES = [
     'jpeg',
     'jpg',
@@ -39,6 +39,8 @@ const ATTACHMENT_MIMES = [
 const AVATAR_DIR_NAME = UPLOAD_DIR_NAME . '/avatar';
 const ATTACHMENT_DIR_NAME = UPLOAD_DIR_NAME . '/attachment';
 const ATTACHMENT_IMAGE_DIR_NAME = ATTACHMENT_DIR_NAME . '/images';
+
+const ATTACHMENT_PRIVATE_PATH = 'app/private/attachments';
 
 const USERNAME_ANONYMOUS = 'Anonymous';
 

@@ -21,6 +21,7 @@ class Attachment extends Model
         'extension',
         'size_b',
         'path',
+        'id_message_hook'
     ];
 
     protected $casts = [

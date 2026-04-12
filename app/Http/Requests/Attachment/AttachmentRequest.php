@@ -36,7 +36,8 @@ class AttachmentRequest extends FormRequest
                 'mimes:' . $this->mimes,
                 'max:' . $this->size,
             ],
-            'type' => ['required', Rule::enum(AttachmentTypeEnum::class)]
+
+//            'type' => ['required', Rule::enum(AttachmentTypeEnum::class)]
         ];
     }
 
