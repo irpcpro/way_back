@@ -7,8 +7,10 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Attachment\AttachmentRequest;
 use App\Http\Resources\V1\Attachment\AttachmentResource;
 use App\Models\Attachment;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Intervention\Image\Facades\Image;
+use Vinkla\Hashids\Facades\Hashids;
 use function APIResponse;
 use function auth;
 use function public_path;
@@ -71,7 +73,7 @@ class AttachmentController extends Controller
             'type' => AttachmentTypeEnum::IMAGE->value,
             'name' => $attachment_name,
             'extension' => $final_extension,
-            'path' => $final_upload_path,
+            'path' => ATTACHMENT_PRIVATE_PATH,
             'size_b' => File::size($final_upload_path),
             'id_message_hook' => $id_message_hook,
         ]);
@@ -85,12 +87,16 @@ class AttachmentController extends Controller
         $response->send();
     }
 
-    public function view(int $id){
-        $current_user = auth()->user();
-
+    public function view(int $id, Request $request){
         $attachment = Attachment::findOrFail($id);
 
-        if(!$current_user->message_hook_member()->where('id_message_hook', $attachment->id_message_hook)->exists())
+        // decode the auth
+        $auth = $request->query('auth');
+        $decoded = Hashids::decode($auth);
+        [$id_attachment, $id_message_hook] = $decoded;
+
+        // check validation
+        if($id_attachment != $id || $attachment->id_message_hook != $id_message_hook)
             abort(404);
 
         $path = storage_path(ATTACHMENT_PRIVATE_PATH . '/' . $attachment->name . '.' . $attachment->extension);

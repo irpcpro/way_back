@@ -50,7 +50,7 @@ class MessageResource extends JsonResource
             if($attachment->exists() != null)
                 $data['attachment'] = (new AttachmentResource($attachment->first()))->toArray($request);
             else
-                $data['attachment'] = 'null';
+                $data['attachment'] = null;
         }
 
         return $data;

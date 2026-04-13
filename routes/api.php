@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\API\V1\Attachment\AttachmentController;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
@@ -82,9 +83,10 @@ Route::middleware('throttle:550,1')->namespace('V1')->prefix('v1')->group(functi
         // attachment
         Route::prefix('attachment')->namespace('Attachment')->controller('AttachmentController')->group(function(){
             Route::post('upload/{id_message_hook}', 'upload');
-            Route::get('{id}',  'view')->middleware('auth:sanctum')->name('attachment.view');
         });
-
     });
+
+    // view attachment
+    Route::get('attatch/{id}',  [AttachmentController::class, 'view'])->name('attach.view');
 
 });
