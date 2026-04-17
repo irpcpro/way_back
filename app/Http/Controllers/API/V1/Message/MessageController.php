@@ -196,6 +196,7 @@ class MessageController extends Controller
         APIResponse('messages received.', 200, true)->setData([
             'chats' => $messages,
             'members' => $members,
+            'type' => $message_hook->type,
             'has_more' => $messages->count() === PAGINATE_MESSAGE_LOAD
         ])->send();
     }
