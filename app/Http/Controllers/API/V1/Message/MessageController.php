@@ -20,6 +20,7 @@ use App\Models\MessageHook;
 use App\Models\MessageHookMembers;
 use App\Models\MessageSeen;
 use App\Models\User;
+use App\Services\MessagePushNotifier;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -103,6 +104,9 @@ class MessageController extends Controller
             ];
             $response = APIResponse('message sent.', 200, true)->setData($data)->get();
             DB::commit();
+
+            // web push to the other members of this chat, after the response is sent
+            dispatch(fn() => MessagePushNotifier::notifyNewMessage($message))->afterResponse();
         } catch (\Exception $exception){
             DB::rollBack();
             Log::error('something went wrong in ' . __METHOD__, [$exception]);

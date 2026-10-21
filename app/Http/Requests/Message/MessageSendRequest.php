@@ -72,10 +72,16 @@ class MessageSendRequest extends AppRequest
     protected function prepareForValidation()
     {
         $this->merge([
-            'context' => trim($this->context),
-            'type' => (int) htmlspecialchars($this->type),
-            'id_attachment' => (int) htmlspecialchars($this->id_attachment)
+            'context' => trim((string) $this->context),
+            'type' => (int) htmlspecialchars((string) $this->type),
         ]);
+
+        // only cast id_attachment when it was sent, otherwise text messages get id_attachment=0 and fail "exists"
+        if($this->filled('id_attachment')){
+            $this->merge([
+                'id_attachment' => (int) htmlspecialchars((string) $this->id_attachment)
+            ]);
+        }
     }
 
     public function rules(): array
@@ -95,6 +101,7 @@ class MessageSendRequest extends AppRequest
             ],
             'id_attachment' => [
                 'bail',
+                'nullable',
                 'required_if:type,' . MessageTypeEnum::ATTACHMENT->value,
                 'exists:attachments,id_attachment',
                 Rule::exists('attachments')->where(function($query){

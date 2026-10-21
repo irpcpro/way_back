@@ -80,6 +80,13 @@ Route::middleware('throttle:550,1')->namespace('V1')->prefix('v1')->group(functi
             });
         });
 
+        // push notifications
+        Route::prefix('push')->namespace('Push')->controller('PushController')->group(function(){
+            Route::get('public_key', 'publicKey');
+            Route::post('subscribe', 'subscribe');
+            Route::post('unsubscribe', 'unsubscribe');
+        });
+
         // attachment
         Route::prefix('attachment')->namespace('Attachment')->controller('AttachmentController')->group(function(){
             Route::post('upload/{id_message_hook}', 'upload');
